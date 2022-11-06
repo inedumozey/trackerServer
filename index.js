@@ -23,7 +23,10 @@ app.get('/', async (req, res) => {
     try {
         const info = {}
         const ip = req.headers['ip']
-        if (!ip) {
+        const latitude = req.headers['latitude']
+        const longitude = req.headers['longitude']
+
+        if (!ip || !longitude || !latitude) {
             res.status(400).json({ msg: 'Failed to fetch' })
         }
         else {
@@ -31,18 +34,20 @@ app.get('/', async (req, res) => {
 
             info.ip = ip;
             info.country = geoInfo.country;
-            info.latitude = geoInfo.ll[0]
-            info.longitude = geoInfo.ll[1];
+            // info.latitude = geoInfo.ll[0]
+            // info.longitude = geoInfo.ll[1];
 
             // console.log(geoInfo)
 
-            weather.setCoordinate(info.latitude, info.longitude)
+            weather.setCoordinate(latitude, longitude)
             // weather.setCity('Plateau');
 
             weather.setAPPID(process.env.WEATHER_API);
             weather.getAllWeather(function (err, JSONObj) {
                 info.temp = JSONObj.main.temp;
                 info.wind_speed = JSONObj.wind.speed;
+                info.city = JSONObj.name;
+                info.city = JSONObj.name;
                 info.city = JSONObj.name;
 
                 res.status(200).json({ msg: 'successfull', data: info })
