@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
 require('dotenv').config();
 const weather = require('openweather-apis');
 const geoip = require('geoip-lite');
@@ -7,8 +8,15 @@ const app = express();
 
 app.use(cors())
 
-app.get('/test', (req, res) => {
-    res.send('server is working')
+app.get('/test', async (req, res) => {
+    try {
+        const { data } = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=201301&appid=${process.env.WEATHER_API}&units=metric`);
+
+        console.log(data)
+    }
+    catch (err) {
+        res.status(500).json({ msg: err.message || 'Server error' })
+    }
 })
 
 app.get('/', async (req, res) => {
@@ -25,7 +33,8 @@ app.get('/', async (req, res) => {
             info.country = geoInfo.country;
             info.latitude = geoInfo.ll[0]
             info.longitude = geoInfo.ll[1];
-            info.city = geoInfo.city;
+
+            // console.log(geoInfo)
 
             weather.setCoordinate(info.latitude, info.longitude)
             // weather.setCity('Plateau');
@@ -34,6 +43,7 @@ app.get('/', async (req, res) => {
             weather.getAllWeather(function (err, JSONObj) {
                 info.temp = JSONObj.main.temp;
                 info.wind_speed = JSONObj.wind.speed;
+                info.city = JSONObj.name;
 
                 res.status(200).json({ msg: 'successfull', data: info })
             });
