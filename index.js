@@ -40,6 +40,7 @@ app.get('/', async (req, res) => {
             // console.log(geoInfo)
 
             weather.setCoordinate(latitude, longitude)
+            // console.log(latitude, longitude)
             // weather.setCity('Plateau');
 
             weather.setAPPID(process.env.WEATHER_API);
