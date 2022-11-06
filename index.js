@@ -7,6 +7,9 @@ const app = express();
 
 app.use(cors())
 
+app.get('/test', (req, res) => {
+    res.send('server is working')
+})
 
 app.get('/', async (req, res) => {
     try {
