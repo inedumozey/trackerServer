@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+require('dotenv').config();
 const weather = require('openweather-apis');
 const geoip = require('geoip-lite');
 const app = express();
